@@ -3,8 +3,8 @@ UNIVERSIDAD DEL VALLE DE GUATEMALA
 CC3056 - Programacion de Microprocesadores
 Realizado por: Angel Castellanos
 
-LAB3 - Parte 2
-Pide una cantidad de threads y una rango de numeros para poder sumar todos los numeros primos dentro del rango.
+LAB4 - Parte 1
+Pide una cantidad de threads y una rango de numeros para poder sumar todos los numeros primos dentro del rango. Uso de variables MUTEX
 ---------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,9 +19,9 @@ pthread_mutex_t candado;
 
 void *Sumatoria(void *argument ) {
 
-	float *input = (float *)argument;
+	int *input = (int *)argument;
 
-    float numeroSumatoria = *input;
+    int numeroSumatoria = *input;
     
     float resultado = 0.0;
 
@@ -29,25 +29,26 @@ void *Sumatoria(void *argument ) {
     resultado = (numeroSumatoria) * (numeroSumatoria + 1);
 
     pthread_mutex_lock(&candado);
+    
     SumaTotal += (1/resultado);
-    cout << "Cuando n = " << numeroSumatoria << " el subtotal es de  --- " << SumaTotal << " ---" << endl;
-
+    cout << "El subtotal es de  --- " << SumaTotal << " ---" << endl;
+    
     pthread_mutex_unlock(&candado);
 
-    //pthread_exit(NULL);
-    //pthread_exit((void *) IntResultado);
+    
     return NULL;
 }
 
-int main() {
+int main(void) {
 
     int n = 0;
-
+    int NumeroATrabajar = 0;
     
     pthread_attr_t attr;
 
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    pthread_mutex_init(&candado, NULL);
 
     cout << "Ingrese el numero n maximo: " << endl;
     cin >> n;
@@ -55,15 +56,15 @@ int main() {
     pthread_t idThread[n];
     
 
-    for(int i = 0; i <= n; i++){
+    for(int i = 0; i < n; i++){
 
-        float NumeroATrabajar = (float) i;
-        pthread_create(&idThread[i], &attr, Sumatoria, ( void *)&NumeroATrabajar);
-        //pthread_join(idThread, NULL);
+        NumeroATrabajar = i;
+        pthread_create(&(idThread[i]), &attr, &Sumatoria, ( void *)&NumeroATrabajar);
+        
         
     }
 
-    for(int i = 0; i <= n; i++){
+    for(int i = 0; i < n; i++){
 
         
         pthread_join(idThread[i], NULL);
