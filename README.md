@@ -6,4 +6,4 @@ Laboratorio 3 de programacion de microprocesadores
 <br />
 
 ##### Diagrama parte 2 
-<img src="https://github.com/angelcast2002/LAB3-PrograMicro/blob/main/Parte2-Lab3/LAB3-MicroProcesadores-Parte2.png">
+<img src="">
