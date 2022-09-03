@@ -61,15 +61,27 @@ int main(void) {
         NumeroATrabajar = i;
         pthread_create(&(idThread[i]), &attr, &Sumatoria, ( void *)&NumeroATrabajar);
         
-        
     }
 
     for(int i = 0; i < n; i++){
-
         
         pthread_join(idThread[i], NULL);
         
     }
+
+    /*for(int i = 1; i < n; i++){
+
+        NumeroATrabajar = i;
+        pthread_create(&(idThread[i]), &attr, &Sumatoria, ( void *)&NumeroATrabajar);
+        sleep(1);
+        
+    }
+
+    for(int i = 1; i < n; i++){
+        
+        pthread_join(idThread[i], NULL);
+        
+    }*/
 
     cout << "La sumatoria de n = 1 hasta n = " << n << " es de: "  << SumaTotal << endl;
 
