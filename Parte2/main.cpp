@@ -74,11 +74,15 @@ string nombreProductos[8] = {"Pastel de Chocolate", "White Mocha", "Cafe America
 //Precios
 float PrecioUnitario[16] = {pastelChocolate, whiteMocha, cafeAmericano, latte, toffeCoffe, cappuccino, smoresLatte, cafeTostadoMolido
 ,pastelChocolate, whiteMocha, cafeAmericano, latte, toffeCoffe, cappuccino, smoresLatte, cafeTostadoMolido};
-float CostoUnitario[16] = {Unidad_pastelChocolate, Unidad_whiteMocha, Unidad_cafeAmericano, Unidad_latte, Unidad_toffeCoffe, Unidad_cappuccino, Unidad_smoresLatte, Unidad_cafeTostadoMolido
-, Unidad_pastelChocolate, Unidad_whiteMocha, Unidad_cafeAmericano, Unidad_latte, Unidad_toffeCoffe, Unidad_cappuccino, Unidad_smoresLatte, Unidad_cafeTostadoMolido};
+float CostoUnitario[16] = {Unidad_pastelChocolate, Unidad_whiteMocha, Unidad_cafeAmericano, Unidad_latte, Unidad_toffeCoffe, 
+Unidad_cappuccino, Unidad_smoresLatte, Unidad_cafeTostadoMolido
+, Unidad_pastelChocolate, Unidad_whiteMocha, Unidad_cafeAmericano, 
+Unidad_latte, Unidad_toffeCoffe, Unidad_cappuccino, Unidad_smoresLatte, Unidad_cafeTostadoMolido};
 //Cantidad de ventas
-float Ventas[32] = {VentasJulio_pastelChocolate, VentasJulio_whiteMocha, VentasJulio_cafeAmericano, VentasJulio_latte, VentasJulio_toffeCoffe, VentasJulio_cappuccino, VentasJulio_smoresLatte, VentasJulio_cafeTostadoMolido
-, VentasAgosto_pastelChocolate, VentasAgosto_whiteMocha, VentasAgosto_cafeAmericano, VentasAgosto_latte, VentasAgosto_toffeCoffe, VentasAgosto_cappuccino, VentasAgosto_smoresLatte, VentasAgosto_cafeTostadoMolido};
+float Ventas[32] = {VentasJulio_pastelChocolate, VentasJulio_whiteMocha, VentasJulio_cafeAmericano, 
+VentasJulio_latte, VentasJulio_toffeCoffe, VentasJulio_cappuccino, VentasJulio_smoresLatte, VentasJulio_cafeTostadoMolido
+, VentasAgosto_pastelChocolate, VentasAgosto_whiteMocha, VentasAgosto_cafeAmericano, VentasAgosto_latte, 
+VentasAgosto_toffeCoffe, VentasAgosto_cappuccino, VentasAgosto_smoresLatte, VentasAgosto_cafeTostadoMolido};
 
 //Resultados
 //Arrays con los resultados
@@ -240,6 +244,10 @@ int main(void) {
         
         cout << "Hilo " << i << " creado" << endl;  //Esta linea le da tiempo suficiente al hilo para que se cree
         int id = i;
+        
+        //esta linea se debe descomentar al ejecutarse en raspberry
+        //sleep(1);
+
         pthread_create(&(idThread[i]), &attr, &CalculoHilo, ( void *)&id);
         //pthread_join(idThread[i], NULL);
         
