@@ -6,5 +6,7 @@ Laboratorio 3 de programacion de microprocesadores
 <br />
 
 ### Diagrama parte 2 
+#### Link del Video
+##### https://drive.google.com/file/d/14SOuGcStDhxFcl-T959AjzLDHyGLwOQV/view?usp=sharing
 ##### Para poder compilar el programa en Raspberry se debe agregar "-lm" debido a la libreria de matemáticas utilizada para el redondeo de valores.
 <img src="">
