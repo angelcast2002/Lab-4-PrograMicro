@@ -12,6 +12,7 @@ Calculo de utilidad de la tienda &Café en UVG. Uso de variables MUTEX
 #include <unistd.h>
 #include <pthread.h>
 #include <iostream>
+#include<math.h>
 using namespace std;
 
 pthread_mutex_t candado;
@@ -67,6 +68,9 @@ const float VentasAgosto_cafeTostadoMolido = 15;
 
 
 //Arrays con los valores a trabajar
+//Nombres
+string nombreProductos[8] = {"Pastel de Chocolate", "White Mocha", "Cafe Americano", "Latte", "Toffe Coffe", "Cappuccino", 
+"S'mores Latte", "Cafe Tostado Molido"};
 //Precios
 float PrecioUnitario[16] = {pastelChocolate, whiteMocha, cafeAmericano, latte, toffeCoffe, cappuccino, smoresLatte, cafeTostadoMolido
 ,pastelChocolate, whiteMocha, cafeAmericano, latte, toffeCoffe, cappuccino, smoresLatte, cafeTostadoMolido};
@@ -83,6 +87,13 @@ float UtilidaVenta[16] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 //Ventas para cada mes
 float VentasJulio = 0.0;
 float VentasAgosto = 0.0;
+//Utilidad por mes
+float UtilidadJulio = 0.0;
+float UtilidadAgosto = 0.0;
+//Reportes
+string reporteJulio = "--- REPORTE DEL MES DE JULIO ---\n";
+string reporteAgosto = "--- REPORTE DEL MES DE AGOSTO ---\n";
+
 
 void *CalculoHilo(void *argument) {
 
@@ -113,6 +124,7 @@ void *CalculoPerMes(void *argument) {
 	int *input = (int *)argument;
     int idHilo = *input;
     float TotalVentasMes = 0.0;
+    float TotalUtilidadMes = 0.0;
 
     //Trabajar julio
     if (idHilo == 1)
@@ -123,10 +135,12 @@ void *CalculoPerMes(void *argument) {
         {
             
             TotalVentasMes += MontoVentas[i];
-            
+            TotalUtilidadMes += UtilidaVenta[i];
+
         }
         
         VentasJulio += TotalVentasMes;
+        UtilidadJulio = TotalUtilidadMes - costosVariablesJulio;
         //Desbloqueo MUTEX
         pthread_mutex_unlock(&candado);
 
@@ -140,15 +154,74 @@ void *CalculoPerMes(void *argument) {
         {
             
             TotalVentasMes += MontoVentas[i];
-            //Desbloqueo MUTEX
-            pthread_mutex_unlock(&candado);
+            TotalUtilidadMes += UtilidaVenta[i];
+
         }
         
         VentasAgosto += TotalVentasMes;
+        UtilidadAgosto = TotalUtilidadMes - costosVariablesAgosto;
         //Desbloqueo MUTEX
         pthread_mutex_unlock(&candado);
     }
 
+    return NULL;
+}
+
+void *Reportes(void *argument) {
+
+	int *input = (int *)argument;
+    int idHilo = *input;
+    string reporte = "";
+    //Trabajar julio
+    if (idHilo == 1)
+    {
+        reporte = "- Ventas por producto - \n";
+        for (int i = 0; i < 8; i++)
+        {
+            reporte += nombreProductos[i] + ": Q" + to_string((int)round(MontoVentas[i])) + " \n";
+            
+        }
+
+        reporte += "\n- Utilidad por producto - \n";
+        for (int i = 0; i < 8; i++)
+        {
+            reporte += nombreProductos[i] + ": Q" + to_string((int)round(UtilidaVenta[i])) + " \n";
+            
+        }
+        
+        reporte += "\nTotal ventas: Q" + to_string((int)VentasJulio) + " \n";
+        reporte += "Costos variables: Q" + to_string((int)costosVariablesJulio) + " \n";
+        reporte += "Utilidad del mes: Q" + to_string((int)UtilidadJulio) + " \n";
+
+        reporteJulio += reporte;
+    }
+    //Trabajar agosto
+    if (idHilo == 2)
+    {
+        int contador = 8;
+        reporte = "- Ventas por producto - \n";
+        for (int i = 0; i < 8; i++)
+        {   
+            contador = i + 8;
+            reporte += nombreProductos[i] + ": Q" + to_string((int)round(MontoVentas[contador])) + " \n";
+
+        }
+
+        reporte += "\n- Utilidad por producto - \n";
+        for (int i = 0; i < 8; i++)
+        {
+            contador = i + 8;
+            reporte += nombreProductos[i] + ": Q" + to_string((int)round(UtilidaVenta[contador])) + " \n";
+
+        }
+        
+        reporte += "\nTotal ventas: Q" + to_string((int)VentasAgosto) + " \n";
+        reporte += "Costos variables: Q" + to_string((int)costosVariablesAgosto) + " \n";
+        reporte += "Utilidad del mes: Q" + to_string((int)UtilidadAgosto) + " \n";
+
+        reporteAgosto += reporte;
+    }
+    
     return NULL;
 }
 
@@ -179,6 +252,8 @@ int main(void) {
         
     }
 
+    cout << endl;
+
     //Calculo de ventas por mes
 
     for(int i = 1; i < 3; i++){
@@ -197,14 +272,26 @@ int main(void) {
         
     }
 
-    for (int i = 0; i < 16; i++)
-    {
-        cout << "Monto de ventas del producto " << i << ": " << MontoVentas[i] << endl;
-        cout << "Utilidad del producto " << i << ": " << UtilidaVenta[i] << endl;
+    //Reportes
+    for(int i = 1; i < 3; i++){
+        
+        int id = i;
+        pthread_create(&(idThread[i]), &attr, &Reportes, ( void *)&id);
+        sleep(1);
+        
+    }
+    
+
+    for(int i = 1; i < 3; i++){
+
+        int id = i ;
+        pthread_join(idThread[id], NULL);
+        
     }
 
-    cout << "Ventas Julio: " << VentasJulio << endl;
-    cout << "Ventas Agosto: " << VentasAgosto << endl;
+    cout << reporteJulio << endl;
+    cout << reporteAgosto << endl;
+    
     
     
 
