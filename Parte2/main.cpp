@@ -249,7 +249,9 @@ int main(void) {
         //sleep(1);
 
         pthread_create(&(idThread[i]), &attr, &CalculoHilo, ( void *)&id);
-        //pthread_join(idThread[i], NULL);
+        
+        //sleep(1);
+        //En algunos computadores debe ser la linea anterior la que se debe descomentar (linux)
         
     }
 
